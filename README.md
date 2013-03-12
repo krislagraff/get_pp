@@ -1,6 +1,6 @@
 #get_pp
 
-This plugin implements [get pages](http://codex.wordpress.org/Function_Reference/get_pages) and [get posts](http://codex.wordpress.org/Function_Reference/get_posts) functions as a shortcode with almost no intervention. Everything can be overridden with filters to allow total flexibility for developers. __This plugin requires coding knowledge.__
+This plugin implements WordPress' [get pages](http://codex.wordpress.org/Function_Reference/get_pages) and [get posts](http://codex.wordpress.org/Function_Reference/get_posts) functions as a WordPress shortcode with almost no intervention. Everything can be overridden with filters to allow total flexibility for developers. __This plugin requires coding knowledge.__
 
 After installing, you would simply add something like this to your content:
 
@@ -21,7 +21,7 @@ Types of plugins this can replace:
 * etc.
 
 ##How To Use
-Most of the documentation is on the Codex: [get pages](http://codex.wordpress.org/Function_Reference/get_pages) and [get posts](http://codex.wordpress.org/Function_Reference/get_posts)
+Most of the documentation is on the WordPress Codex: [get pages](http://codex.wordpress.org/Function_Reference/get_pages) and [get posts](http://codex.wordpress.org/Function_Reference/get_posts)
 
 ###Arguments
 
@@ -33,12 +33,12 @@ Most of the documentation is on the Codex: [get pages](http://codex.wordpress.or
 
 The words this, parent, and top will be dynamically replaced with the appropreate item.  For the following, suppose we have the following page structure  
 
-* 135
-* * 136
-* * 137
-* * * 138
-* * * * 139 - current item
-* 140 
+- 135
+- - 136
+- - 137
+- - - 138
+- - - - 139 - current item
+- - 140 
 
 ####This
 
