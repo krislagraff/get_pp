@@ -21,7 +21,7 @@ function getpp_shortcode($args){
 	$args = getpp_applyargfilters(apply_filters('getpp_filterargs',$filters),$args);
 	$posts = apply_filters('getpp_filterposts',$args);
 	if (!$posts) return;
-	$template = 'getpp_template_' . apply_filters('getpp_filtertemplate');
+	$template = 'getpp_template_' . apply_filters('getpp_filtertemplate', $args);
 	$output = apply_filters($template,$posts,$args);
 	return $output;
 }
@@ -115,9 +115,14 @@ function getpp_filterposts_default($args){
 	}
 }
 
-function getpp_filtertemplate_default($func){
+function getpp_filtertemplate_default($args){
+	if (!empty($args[template])) {
+		if (has_filter('get_pp_template_'.$args[template])) {
+			return $args[template];
+		}
+	}
 	add_filter('getpp_template_default','getpp_template_default_default',0,2); 
-	return $func .'default';	
+	return 'default';	
 }
 
 function getpp_template_default_default($posts, $args){
