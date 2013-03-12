@@ -3,6 +3,7 @@ Contributors: bristweb
 Tags: 
 Requires at least: 3.5
 Tested up to: 3.5
+Stable tag: trunk
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
