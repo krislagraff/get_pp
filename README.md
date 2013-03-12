@@ -1,4 +1,4 @@
-#get_pp
+#get_pp WordPress Shortcode Plugin
 
 This plugin implements WordPress' [get pages](http://codex.wordpress.org/Function_Reference/get_pages) and [get posts](http://codex.wordpress.org/Function_Reference/get_posts) functions as a WordPress shortcode with almost no intervention. Everything can be overridden with filters to allow total flexibility for developers. __This plugin requires coding knowledge.__
 
@@ -62,7 +62,14 @@ ex:
 
 ex: `[getpp child_of="top" func="get_pages"]` would evaluate to  `get_pages('child_of=135');`  
 
+##Templates
+
+The plugin currently only has a default template which lists out the posts.  You can add more templates easily.  Simply add `template="%yourtemplatename%"` to the shortcode.  The plugin will then look for a filter named `getpp_template_%yourtemplatename%`.  You can then create the filter in your `functions.php` and have it render however you like!`.  The default template assigns classes based on the [Bootstrap framework](http://twitter.github.com/bootstrap/).
+
 ## Changelog
 
 ###0.1
 * Initial plugin
+
+##Contributing
+If you have a useful template to add, share it with a pull request!  
