@@ -160,7 +160,7 @@ function set_getpp_meta($links, $file) {
     if ($file == $plugin) {
         return array_merge(
             $links,
-            array( sprintf( '<a href="https://github.com/bristweb/get_pp">%s</a>',  __('Documentation') ) )
+            array( sprintf( '<a target="_blank" href="https://github.com/bristweb/get_pp">%s</a>',  __('Documentation') ) )
         );
     }
     return $links;
