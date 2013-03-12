@@ -1,33 +1,29 @@
-=== Disable Comments ===
-Contributors: bristleconeweb
-Tags: get_pages, get_posts, get_pages shortcode, get_posts shortcode
-Requires at least: 3.5
+=== get_pp ===
+Contributors: bristweb
+Tags: 
 Tested up to: 3.5
-Stable tag: trunk
+License: GPLv3
+License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-Allows administrators to globally disable comments on their site. Comments can be disabled according to post type.
+Very customizable shortcode which implements WordPress' get pages and get posts functions.
 
 == Description ==
 
-Allows administrators to globally disable comments on their site. Comments can be disabled according to post type.
+This plugin implements [get pages](http://codex.wordpress.org/Function_Reference/get_pages) and [get posts](http://codex.wordpress.org/Function_Reference/get_posts) functions as a shortcode with almost no intervention. Everything can be overridden with filters to allow total flexibility for developers.  __This plugin requires coding knowledge.__
 
-== Frequently Asked Questions ==
-
-None yet.
-
-== Details ==
-
-None yet.
-
-== Changelog ==
-
-= 0.1 =
-* Plugin created
-* Readme.txt created
-
+Get documentation on the [GitHub Repo](https://github.com/bristweb/get_pp)
 
 == Installation ==
 
-1. Upload the plugin folder to the `/wp-content/plugins/` directory
-2. Activate the plugin through the 'Plugins' menu in WordPress
-3. The plugin settings can be accessed via the 'Settings' menu in the administration area (either your site administration for single-site installs, or your network administration for network installs).
+Get documentation on the [GitHub Repo](https://github.com/bristweb/get_pp)
+
+== Frequently Asked Questions ==
+
+Get documentation on the [GitHub Repo](https://github.com/bristweb/get_pp)
+
+== Screenshots ==
+
+
+== Changelog ==
+
+Get documentation on the [GitHub Repo](https://github.com/bristweb/get_pp)
