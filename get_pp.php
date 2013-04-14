@@ -32,6 +32,8 @@ function getpp_filterargs_default($filters){
 	return array(
 		'parent'=>			'getpp_argfilter_pagerelation',
 		'child_of'=>		'getpp_argfilter_pagerelation', 
+		'include'=>			'getpp_argfilter_pagerelation', 
+		'exclude'=>			'getpp_argfilter_pagerelation', 
 		'post_type'=>		'getpp_argfilter_post_type',
 		'category'=>		'getpp_argfilter_catrelation'
 		);
