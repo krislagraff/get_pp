@@ -14,12 +14,12 @@ Text Domain: get_pp
 add_shortcode( 'getpp', 				'getpp_shortcode' ); 
 add_filter('getpp_filterargs',			'getpp_filterargs_default',0); 
 add_filter('getpp_filtertemplate',		'getpp_filtertemplate_default',0);
-add_filter('getpp_filterposts',			'getpp_filterposts_default',0);
+add_filter('getpp_getposts',			'getpp_getposts_default',0);
 
 function getpp_shortcode($args){
 	$args = array_merge(wp_parse_args($args[args]),$args);
 	$args = getpp_applyargfilters(apply_filters('getpp_filterargs',$filters),$args);
-	$posts = apply_filters('getpp_filterposts',$args);
+	$posts = apply_filters('getpp_getposts',$args);
 	if (!$posts) return;
 	$template = 'getpp_template_' . apply_filters('getpp_filtertemplate', $args);
 	$output = apply_filters($template,$posts,$args);
@@ -95,7 +95,7 @@ function getpp_argfilter_catrelation_default($value){
 		return $return;
 	} 
 
-function getpp_filterposts_default($args){
+function getpp_getposts_default($args){
 	switch ($args[func]) {
 		case 'get_posts':
 			if (get_post_type(get_the_ID()) != 'post') {
@@ -129,13 +129,13 @@ function getpp_filtertemplate_default($args){
 
 function getpp_template_default_default($posts, $args){
 	$format = '<ul style="padding:0" class="nav nav-list">%s</ul>';
-	$string = getpp_template_default_default_items($posts);
+	$string = getpp_template_default_default_items($posts, $args);
 	return sprintf($format,$string);
 }
-	function getpp_template_default_default_items($posts){
+	function getpp_template_default_default_items($posts, $shortcodeargs){
 		$format = '<li id="%1$s" class="%5$s"><a style="border: 1px solid #e5e5e5; margin: auto auto -1px;" href="%2$s"><i class="icon-chevron-right pull-right"></i>%4$s%3$s</a></li>';
 		$parents = array($posts[0]->post_parent);
-	$depth = 0;
+		$depth = 0;
 		foreach ($posts as $key => $value) {
 			// $relation = $posts[$key+1]->post_parent;
 			$parent = $value->post_parent;
@@ -146,12 +146,14 @@ function getpp_template_default_default($posts, $args){
 					$depth--;
 				array_push($parents, $parent);
 			}
-			$args[id] = 		'post-'. $value->ID;
-			$args[href] =		get_permalink($value->ID);
-			$args[title] = 		$value->post_title;
-			$args[indent] = 	str_repeat('&raquo; ', $depth);
-			$args[css] = 		($value->ID == get_the_ID())? 'active' : '';
-			$output .= vsprintf($format, $args);
+			if((($shortcodeargs[depth] >= 0) && ($depth <= $shortcodeargs[depth])) || (!isset($shortcodeargs[depth]))){
+				$args[id] = 		'post-'. $value->ID;
+				$args[href] =		get_permalink($value->ID);
+				$args[title] = 		$value->post_title;
+				$args[indent] = 	str_repeat('&raquo; ', $depth);
+				$args[css] = 		($value->ID == get_the_ID())? 'active' : '';
+				$output .= vsprintf($format, $args);
+			}
 		}
 		return $output;
 	}
