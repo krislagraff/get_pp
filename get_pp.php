@@ -117,9 +117,41 @@ function getpp_getposts_default($args){
 	}
 }
 
+/**
+ * Use this function as a sample of how to create your own templates
+ * @param  [type] $posts the posts returned by WordPress
+ * @param  [type] $sargs the original arguments specified in the shortcode
+ * @return [type] returns the html output
+ */
+function getpp_template_summary_default($posts, $sargs){
+	$format = '<div class="media">%1$s<div class="media-body"><a href="%2$s"><h4 class="media-heading">%3$s</h4></a>%4$s</div></div>';
+	$parents = array($posts[0]->post_parent);
+	$depth = 0;
+	foreach( $posts as $post ) : setup_postdata($post); 
+		$parent = $post->post_parent;
+		if ($parents[count($parents)-1] != $parent) {
+			if (!in_array($parent, $parents)) {
+				$depth++;
+			}else
+				$depth--;
+			array_push($parents, $parent);
+		}
+		if((($sargs[depth] >= 0) && ($depth <= $sargs[depth])) || (!isset($sargs[depth]))){
+			$args[img] = get_the_post_thumbnail($post->ID, 'thumbnail', array('class'=>'media-object pull-left'));
+			$args[href] = get_permalink();
+			$args[title] = $post->post_title;
+			$args[excerpt] = get_the_excerpt();
+			$output .= vsprintf($format,$args);
+		}
+	endforeach;
+	return $output;
+	//print_r($posts->have_posts());
+}
+add_filter('getpp_template_summary','getpp_template_summary_default',0,2); 
+
 function getpp_filtertemplate_default($args){
 	if (!empty($args[template])) {
-		if (has_filter('get_pp_template_'.$args[template])) {
+		if (has_filter('getpp_template_'.$args[template])) {
 			return $args[template];
 		}
 	}
@@ -127,17 +159,22 @@ function getpp_filtertemplate_default($args){
 	return 'default';	
 }
 
+/**
+ * This function renders a simple list of posts in a Bootstrap styled format.  You can override this with your own filter.  See remove_filter and add_filter in the codex.
+ * @param  [type] $posts the posts returned by WordPress
+ * @param  [type] $args  the original arguments specified in the shortcode
+ * @return [type] returns the html output
+ */
 function getpp_template_default_default($posts, $args){
 	$format = '<ul style="padding:0" class="nav nav-list">%s</ul>';
 	$string = getpp_template_default_default_items($posts, $args);
 	return sprintf($format,$string);
 }
-	function getpp_template_default_default_items($posts, $shortcodeargs){
+	function getpp_template_default_default_items($posts, $sargs){
 		$format = '<li id="%1$s" class="%5$s"><a style="border: 1px solid #e5e5e5; margin: auto auto -1px;" href="%2$s"><i class="icon-chevron-right pull-right"></i>%4$s%3$s</a></li>';
 		$parents = array($posts[0]->post_parent);
 		$depth = 0;
 		foreach ($posts as $key => $value) {
-			// $relation = $posts[$key+1]->post_parent;
 			$parent = $value->post_parent;
 			if ($parents[count($parents)-1] != $parent) {
 				if (!in_array($parent, $parents)) {
@@ -146,7 +183,7 @@ function getpp_template_default_default($posts, $args){
 					$depth--;
 				array_push($parents, $parent);
 			}
-			if((($shortcodeargs[depth] >= 0) && ($depth <= $shortcodeargs[depth])) || (!isset($shortcodeargs[depth]))){
+			if((($sargs[depth] >= 0) && ($depth <= $sargs[depth])) || (!isset($sargs[depth]))){
 				$args[id] = 		'post-'. $value->ID;
 				$args[href] =		get_permalink($value->ID);
 				$args[title] = 		$value->post_title;
