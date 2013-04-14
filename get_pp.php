@@ -145,7 +145,6 @@ function getpp_template_summary_default($posts, $sargs){
 		}
 	endforeach;
 	return $output;
-	//print_r($posts->have_posts());
 }
 add_filter('getpp_template_summary','getpp_template_summary_default',0,2); 
 
