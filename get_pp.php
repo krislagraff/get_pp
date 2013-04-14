@@ -117,37 +117,6 @@ function getpp_getposts_default($args){
 	}
 }
 
-/**
- * Use this function as a sample of how to create your own templates
- * @param  [type] $posts the posts returned by WordPress
- * @param  [type] $sargs the original arguments specified in the shortcode
- * @return [type] returns the html output
- */
-function getpp_template_summary_default($posts, $sargs){
-	$format = '<div class="media">%1$s<div class="media-body"><a href="%2$s"><h4 class="media-heading">%3$s</h4></a>%4$s</div></div>';
-	$parents = array($posts[0]->post_parent);
-	$depth = 0;
-	foreach( $posts as $post ) : setup_postdata($post); 
-		$parent = $post->post_parent;
-		if ($parents[count($parents)-1] != $parent) {
-			if (!in_array($parent, $parents)) {
-				$depth++;
-			}else
-				$depth--;
-			array_push($parents, $parent);
-		}
-		if((($sargs[depth] >= 0) && ($depth <= $sargs[depth])) || (!isset($sargs[depth]))){
-			$args[img] = get_the_post_thumbnail($post->ID, 'thumbnail', array('class'=>'media-object pull-left'));
-			$args[href] = get_permalink();
-			$args[title] = $post->post_title;
-			$args[excerpt] = get_the_excerpt();
-			$output .= vsprintf($format,$args);
-		}
-	endforeach;
-	return $output;
-}
-add_filter('getpp_template_summary','getpp_template_summary_default',0,2); 
-
 function getpp_filtertemplate_default($args){
 	if (!empty($args[template])) {
 		if (has_filter('getpp_template_'.$args[template])) {
@@ -207,3 +176,67 @@ function set_getpp_meta($links, $file) {
 }
  
 add_filter( 'plugin_row_meta', 'set_getpp_meta', 10, 2 );
+
+
+
+
+
+/**
+ * Use this function as a sample of how to create your own templates
+ * @param  [type] $posts the posts returned by WordPress
+ * @param  [type] $sargs the original arguments specified in the shortcode
+ * @return [type] returns the html output
+ */
+function getpp_template_summary_default($posts, $sargs){
+	$format = '<div class="media">%1$s<div class="media-body"><a href="%2$s"><h4 class="media-heading">%3$s</h4></a>%4$s</div></div>';
+	$parents = array($posts[0]->post_parent);
+	$depth = 0;
+	foreach( $posts as $post ) : setup_postdata($post); 
+		$parent = $post->post_parent;
+		if ($parents[count($parents)-1] != $parent) {
+			if (!in_array($parent, $parents)) {
+				$depth++;
+			}else
+				$depth--;
+			array_push($parents, $parent);
+		}
+		if((($sargs[depth] >= 0) && ($depth <= $sargs[depth])) || (!isset($sargs[depth]))){
+			$args[img] = get_the_post_thumbnail($post->ID, 'thumbnail', array('class'=>'media-object pull-left'));
+			$args[href] = get_permalink();
+			$args[title] = $post->post_title;
+			$args[excerpt] = get_the_excerpt();
+			$output .= vsprintf($format,$args);
+		}
+	endforeach;
+	return $output;
+}
+add_filter('getpp_template_summary','getpp_template_summary_default',0,2); 
+
+/**
+ * Use this function as a sample of how to create your own templates
+ * @param  [type] $posts the posts returned by WordPress
+ * @param  [type] $sargs the original arguments specified in the shortcode
+ * @return [type] returns the html output
+ */
+function getpp_template_thumbnails_default($posts, $sargs){
+	$format = '<li><a class="thumbnail" href="%1$s">%2$s</a></li>';
+	$parents = array($posts[0]->post_parent);
+	$depth = 0;
+	foreach( $posts as $post ) : setup_postdata($post); 
+		$parent = $post->post_parent;
+		if ($parents[count($parents)-1] != $parent) {
+			if (!in_array($parent, $parents)) {
+				$depth++;
+			}else
+				$depth--;
+			array_push($parents, $parent);
+		}
+		if((($sargs[depth] >= 0) && ($depth <= $sargs[depth])) || (!isset($sargs[depth]))){
+			$args[href] = get_permalink();
+			$args[img] = get_the_post_thumbnail($post->ID, 'thumbnail', array('alt'	=> get_the_excerpt(),'title'=> $post->post_title));
+			$output .= vsprintf($format,$args);
+		}
+	endforeach;
+	return '<ul class="thumbnails">' . $output . '</ul>';
+}
+add_filter('getpp_template_thumbnails','getpp_template_thumbnails_default',0,2); 
