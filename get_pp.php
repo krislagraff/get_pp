@@ -219,7 +219,7 @@ add_filter('getpp_template_summary','getpp_template_summary_default',0,2);
  * @return [type] returns the html output
  */
 function getpp_template_thumbnails_default($posts, $sargs){
-	$format = '<li class="span2"><a class="thumbnail" href="%2$s">%3$s<b>%1$s</b></a></li>';
+	$format = '<li class="span3"><a class="thumbnail" href="%2$s">%3$s<div class="text-center">%1$s</div></a></li>';
 	$parents = array($posts[0]->post_parent);
 	$depth = 0;
 	foreach( $posts as $post ) : setup_postdata($post); 
@@ -239,6 +239,6 @@ function getpp_template_thumbnails_default($posts, $sargs){
 			$output .= vsprintf($format,$args);
 		}
 	endforeach;
-	return '<ul class="thumbnails">' . $output . '</ul>';
+	return '<div class="row-fluid"><ul class="thumbnails">' . $output . '</ul></div>';
 }
 add_filter('getpp_template_thumbnails','getpp_template_thumbnails_default',0,2); 
