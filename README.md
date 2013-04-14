@@ -64,7 +64,7 @@ ex: `[getpp child_of="top" func="get_pages"]` would evaluate to  `get_pages('chi
 
 ##Depth
 
-You can specify the depth for hierarchical results.   Simply add `depth=0` to show no children.  `depth=` for immediate children, and so on.
+You can specify the depth for hierarchical results.   Simply add `depth=0` to show no children.  `depth=1` for immediate children, and so on.
 
 ##Templates
 
