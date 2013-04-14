@@ -219,7 +219,7 @@ add_filter('getpp_template_summary','getpp_template_summary_default',0,2);
  * @return [type] returns the html output
  */
 function getpp_template_thumbnails_default($posts, $sargs){
-	$format = '<li><a class="thumbnail" href="%1$s">%2$s</a></li>';
+	$format = '<li><a class="thumbnail" href="%2$s">%3$s<h4>%1$s</h4></a></li>';
 	$parents = array($posts[0]->post_parent);
 	$depth = 0;
 	foreach( $posts as $post ) : setup_postdata($post); 
@@ -232,8 +232,10 @@ function getpp_template_thumbnails_default($posts, $sargs){
 			array_push($parents, $parent);
 		}
 		if((($sargs[depth] >= 0) && ($depth <= $sargs[depth])) || (!isset($sargs[depth]))){
+			$excerpt = get_the_excerpt();
+			$args[title] = $post->post_title;
 			$args[href] = get_permalink();
-			$args[img] = get_the_post_thumbnail($post->ID, 'thumbnail', array('alt'	=> get_the_excerpt(),'title'=> $post->post_title));
+			$args[img] = get_the_post_thumbnail($post->ID, 'thumbnail', array('alt'	=> $excerpt,'title'=> $args[title]));
 			$output .= vsprintf($format,$args);
 		}
 	endforeach;
