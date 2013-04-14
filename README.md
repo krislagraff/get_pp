@@ -31,7 +31,7 @@ Most of the documentation is on the WordPress Codex: [get pages](http://codex.wo
 
 ###Dynamic replacement
 
-The words this, parent, and top will be dynamically replaced with the appropreate item.  For the following, suppose we have the following page structure  
+The words this, parent, and top will be dynamically replaced with the appropriate item.  For the following, suppose we have the following page structure  
 
 - 135
 - - 136
