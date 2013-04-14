@@ -62,6 +62,10 @@ ex:
 
 ex: `[getpp child_of="top" func="get_pages"]` would evaluate to  `get_pages('child_of=135');`  
 
+##Depth
+
+You can specify the depth for hierarchical results.   Simply add `depth=0` to show no children.  `depth=` for immediate children, and so on.
+
 ##Templates
 
 The plugin currently only has a default template which lists out the posts.  You can add more templates easily.  Simply add `template="%yourtemplatename%"` to the shortcode.  The plugin will then look for a filter named `getpp_template_%yourtemplatename%`.  You can then create the filter in your `functions.php` and have it render however you like!`.  The default template assigns classes based on the [Bootstrap framework](http://twitter.github.com/bootstrap/).
