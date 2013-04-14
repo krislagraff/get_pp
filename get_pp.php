@@ -202,7 +202,7 @@ function getpp_template_summary_default($posts, $sargs){
 		}
 		if((($sargs[depth] >= 0) && ($depth <= $sargs[depth])) || (!isset($sargs[depth]))){
 			$args[img] = get_the_post_thumbnail($post->ID, 'thumbnail', array('class'=>'media-object pull-left'));
-			$args[href] = get_permalink();
+			$args[href] = get_permalink($post->ID);
 			$args[title] = $post->post_title;
 			$args[excerpt] = get_the_excerpt();
 			$output .= vsprintf($format,$args);
@@ -234,7 +234,7 @@ function getpp_template_thumbnails_default($posts, $sargs){
 		if((($sargs[depth] >= 0) && ($depth <= $sargs[depth])) || (!isset($sargs[depth]))){
 			$excerpt = get_the_excerpt();
 			$args[title] = $post->post_title;
-			$args[href] = get_permalink();
+			$args[href] = get_permalink($post->ID);
 			$args[img] = get_the_post_thumbnail($post->ID, 'thumbnail', array('alt'	=> $excerpt,'title'=> $args[title]));
 			$output .= vsprintf($format,$args);
 		}
