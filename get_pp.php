@@ -98,18 +98,10 @@ function getpp_argfilter_catrelation_default($value){
 function getpp_getposts_default($args){
 	switch ($args[func]) {
 		case 'get_posts':
-			if (get_post_type(get_the_ID()) != 'post') {
-				return false;
-			} else {
-				return get_posts($args);
-			}
+			return get_posts($args);
 			break;
 		case 'get_pages':
-			if (get_post_type(get_the_ID()) != 'page') {
-				return false;
-			} else {
-				return get_pages($args);
-			}
+			return get_pages($args);
 			break;
 		default:
 			return "Shortcode is missing the 'func' parameter.";
