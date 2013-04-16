@@ -12,9 +12,9 @@ Text Domain: get_pp
 // devs should add their filters with filter priority > 0
 // see http://codex.wordpress.org/Function_Reference/add_filter#Parameters
 add_shortcode( 'getpp', 				'getpp_shortcode' ); 
-add_filter('getpp_filterargs',			'getpp_filterargs_default',0); 
-add_filter('getpp_filtertemplate',		'getpp_filtertemplate_default',0);
-add_filter('getpp_getposts',			'getpp_getposts_default',0);
+add_filter('getpp_filterargs',			'getpp_filterargs_default',10); 
+add_filter('getpp_filtertemplate',		'getpp_filtertemplate_default',10);
+add_filter('getpp_getposts',			'getpp_getposts_default',10);
 
 function getpp_shortcode($args){
 	$args = array_merge(wp_parse_args($args[args]),$args);
@@ -26,9 +26,9 @@ function getpp_shortcode($args){
 	return $output;
 }
 function getpp_filterargs_default($filters){
-	add_filter('getpp_argfilter_pagerelation',	'getpp_argfilter_pagerelation_default',0); 
-	add_filter('getpp_argfilter_post_type',		'getpp_argfilter_post_type_default',0); 
-	add_filter('getpp_argfilter_catrelation',	'getpp_argfilter_catrelation_default',0); 
+	add_filter('getpp_argfilter_pagerelation',	'getpp_argfilter_pagerelation_default',10); 
+	add_filter('getpp_argfilter_post_type',		'getpp_argfilter_post_type_default',10); 
+	add_filter('getpp_argfilter_catrelation',	'getpp_argfilter_catrelation_default',10); 
 	return array(
 		'parent'=>			'getpp_argfilter_pagerelation',
 		'child_of'=>		'getpp_argfilter_pagerelation', 
@@ -115,7 +115,7 @@ function getpp_filtertemplate_default($args){
 			return $args[template];
 		}
 	}
-	add_filter('getpp_template_default','getpp_template_default_default',0,2); 
+	add_filter('getpp_template_default','getpp_template_default_default',10,2); 
 	return 'default';	
 }
 
@@ -202,7 +202,7 @@ function getpp_template_summary_default($posts, $sargs){
 	endforeach;
 	return $output;
 }
-add_filter('getpp_template_summary','getpp_template_summary_default',0,2); 
+add_filter('getpp_template_summary','getpp_template_summary_default',10,2); 
 
 /**
  * Use this function as a sample of how to create your own templates
@@ -233,4 +233,4 @@ function getpp_template_thumbnails_default($posts, $sargs){
 	endforeach;
 	return '<div class="row-fluid"><ul class="thumbnails">' . $output . '</ul></div>';
 }
-add_filter('getpp_template_thumbnails','getpp_template_thumbnails_default',0,2); 
+add_filter('getpp_template_thumbnails','getpp_template_thumbnails_default',10,2); 
