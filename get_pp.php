@@ -132,17 +132,8 @@ function getpp_template_default_default($posts, $args){
 }
 	function getpp_template_default_default_items($posts, $sargs){
 		$format = '<li id="%1$s" class="%5$s"><a style="border: 1px solid #e5e5e5; margin: auto auto -1px;" href="%2$s"><i class="icon-chevron-right pull-right"></i>%4$s%3$s</a></li>';
-		$parents = array($posts[0]->post_parent);
-		$depth = 0;
 		foreach ($posts as $key => $value) {
-			$parent = $value->post_parent;
-			if ($parents[count($parents)-1] != $parent) {
-				if (!in_array($parent, $parents)) {
-					$depth++;
-				}else
-					$depth--;
-				array_push($parents, $parent);
-			}
+			$depth = getpp_depth($sargs[child_of],$value);
 			if((($sargs[depth] >= 0) && ($depth <= $sargs[depth])) || (!isset($sargs[depth]))){
 				$args[id] = 		'post-'. $value->ID;
 				$args[href] =		get_permalink($value->ID);
@@ -181,17 +172,8 @@ add_filter( 'plugin_row_meta', 'set_getpp_meta', 10, 2 );
  */
 function getpp_template_summary_default($posts, $sargs){
 	$format = '<div class="media">%1$s<div class="media-body"><a href="%2$s"><h4 class="media-heading">%3$s</h4></a>%4$s</div></div>';
-	$parents = array($posts[0]->post_parent);
-	$depth = 0;
 	foreach( $posts as $post ) : setup_postdata($post); 
-		$parent = $post->post_parent;
-		if ($parents[count($parents)-1] != $parent) {
-			if (!in_array($parent, $parents)) {
-				$depth++;
-			}else
-				$depth--;
-			array_push($parents, $parent);
-		}
+		$depth = getpp_depth($sargs[child_of],$value);
 		if((($sargs[depth] >= 0) && ($depth <= $sargs[depth])) || (!isset($sargs[depth]))){
 			$args[img] = get_the_post_thumbnail($post->ID, 'thumbnail', array('class'=>'media-object pull-left'));
 			$args[href] = get_permalink($post->ID);
@@ -212,17 +194,8 @@ add_filter('getpp_template_summary','getpp_template_summary_default',10,2);
  */
 function getpp_template_thumbnails_default($posts, $sargs){
 	$format = '<li class="span3"><a class="thumbnail" href="%2$s">%3$s<div class="text-center">%1$s</div></a></li>';
-	$parents = array($posts[0]->post_parent);
-	$depth = 0;
 	foreach( $posts as $post ) : setup_postdata($post); 
-		$parent = $post->post_parent;
-		if ($parents[count($parents)-1] != $parent) {
-			if (!in_array($parent, $parents)) {
-				$depth++;
-			}else
-				$depth--;
-			array_push($parents, $parent);
-		}
+		$depth = getpp_depth($sargs[child_of],$value);
 		if((($sargs[depth] >= 0) && ($depth <= $sargs[depth])) || (!isset($sargs[depth]))){
 			$excerpt = get_the_excerpt();
 			$args[title] = $post->post_title;
@@ -234,3 +207,18 @@ function getpp_template_thumbnails_default($posts, $sargs){
 	return '<div class="row-fluid"><ul class="thumbnails">' . $output . '</ul></div>';
 }
 add_filter('getpp_template_thumbnails','getpp_template_thumbnails_default',10,2); 
+
+/**
+ * This function gets the depth of the post/page
+ * @param  [type] $start The top level post.  End should be a decendant of $start
+ * @param  [type] $end   The post we are determining the depth of.
+ * @return [type]        Returns the integer depth of the post.  If no beginning is specified, it will be the depth from the root
+ */
+function getpp_depth($start, $end){
+	$ancestors = $end->ancestors;
+	$depth = array_search($start,$ancestors);
+	if (!isset($depth)) 
+		return count($ancestors);
+	else 
+		return $depth;
+}
