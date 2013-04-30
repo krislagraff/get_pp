@@ -142,7 +142,7 @@ function getpp_template_default_default($posts, $args){
 				$args[css] = 		($value->ID == get_the_ID())? 'active' : '';
 				$output .= vsprintf($format, $args);
 			}
-		}
+		} 
 		return $output;
 	}
 
@@ -172,6 +172,7 @@ add_filter( 'plugin_row_meta', 'set_getpp_meta', 10, 2 );
  */
 function getpp_template_summary_default($posts, $sargs){
 	$format = '<div class="media">%1$s<div class="media-body"><a href="%2$s"><h4 class="media-heading">%3$s</h4></a>%4$s</div></div>';
+	global $post;
 	foreach( $posts as $post ) : setup_postdata($post); 
 		$depth = getpp_depth($sargs[child_of],$value);
 		if((($sargs[depth] >= 0) && ($depth <= $sargs[depth])) || (!isset($sargs[depth]))){
@@ -181,7 +182,7 @@ function getpp_template_summary_default($posts, $sargs){
 			$args[excerpt] = get_the_excerpt();
 			$output .= vsprintf($format,$args);
 		}
-	endforeach;
+	endforeach; wp_reset_postdata();
 	return $output;
 }
 add_filter('getpp_template_summary','getpp_template_summary_default',10,2); 
@@ -194,6 +195,7 @@ add_filter('getpp_template_summary','getpp_template_summary_default',10,2);
  */
 function getpp_template_thumbnails_default($posts, $sargs){
 	$format = '<li class="span3"><a class="thumbnail" href="%2$s">%3$s<div class="text-center">%1$s</div></a></li>';
+	global $post;
 	foreach( $posts as $post ) : setup_postdata($post); 
 		$depth = getpp_depth($sargs[child_of],$value);
 		if((($sargs[depth] >= 0) && ($depth <= $sargs[depth])) || (!isset($sargs[depth]))){
@@ -203,7 +205,7 @@ function getpp_template_thumbnails_default($posts, $sargs){
 			$args[img] = get_the_post_thumbnail($post->ID, 'thumbnail', array('alt'	=> $excerpt,'title'=> $args[title]));
 			$output .= vsprintf($format,$args);
 		}
-	endforeach;
+	endforeach; wp_reset_postdata();
 	return '<div class="row-fluid"><ul class="thumbnails">' . $output . '</ul></div>';
 }
 add_filter('getpp_template_thumbnails','getpp_template_thumbnails_default',10,2); 
