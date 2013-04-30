@@ -218,7 +218,8 @@ add_filter('getpp_template_thumbnails','getpp_template_thumbnails_default',10,2)
  */
 function getpp_depth($start, $end){
 	$ancestors = $end->ancestors;
-	$depth = array_search($start,$ancestors);
+	if(isset($ancestors))
+		$depth = array_search($start,$ancestors);
 	if (!isset($depth)) 
 		return count($ancestors);
 	else 
