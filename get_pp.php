@@ -12,23 +12,23 @@ Text Domain: get_pp
 // devs should add their filters with filter priority > 0
 // see http://codex.wordpress.org/Function_Reference/add_filter#Parameters
 add_shortcode( 'getpp', 				'getpp_shortcode' ); 
-add_filter('getpp_filterargs',			'getpp_filterargs_default',10); 
+add_filter('getpp_filter_args',			'getpp_filter_args_default',10); 
 add_filter('getpp_filtertemplate',		'getpp_filtertemplate_default',10);
 add_filter('getpp_getposts',			'getpp_getposts_default',10);
 
 function getpp_shortcode($args){
-	$args = getpp_applyargfilters(apply_filters('getpp_filterargs',$filters),$args); 
+	$args = apply_filters('getpp_filter_args',$args); 
 	$posts = apply_filters('getpp_getposts',$args);
 	if (!$posts) return;
 	$template = 'getpp_template_' . apply_filters('getpp_filtertemplate', $args);
 	$output = apply_filters($template,$posts,$args);
 	return $output;
 }
-function getpp_filterargs_default($filters){
+function getpp_filter_args_default($args){
 	add_filter('getpp_argfilter_pagerelation',	'getpp_argfilter_pagerelation_default',10); 
 	add_filter('getpp_argfilter_post_type',		'getpp_argfilter_post_type_default',10); 
 	add_filter('getpp_argfilter_catrelation',	'getpp_argfilter_catrelation_default',10); 
-	return array(
+	$filters = array(
 		'parent'=>			'getpp_argfilter_pagerelation',
 		'child_of'=>		'getpp_argfilter_pagerelation', 
 		'include'=>			'getpp_argfilter_pagerelation', 
@@ -36,12 +36,9 @@ function getpp_filterargs_default($filters){
 		'post_type'=>		'getpp_argfilter_post_type',
 		'category'=>		'getpp_argfilter_catrelation'
 		);
-}
-function getpp_applyargfilters($filters, $args){
-	foreach ($filters as $key => $value) {
-		if (has_filter($value)) {
-			if(!empty($args[$key]))
-				$args[$key] = apply_filters($value,$args[$key]);
+	foreach ($args as $key => $value){
+		if (!empty($filters[$key])){
+			$args[$key] = apply_filters($filters[$key],$args[$key]);
 		}
 	}
 	return $args;
