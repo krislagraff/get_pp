@@ -13,7 +13,7 @@ Text Domain: get_pp
 // see http://codex.wordpress.org/Function_Reference/add_filter#Parameters
 add_shortcode( 'getpp', 				'getpp_shortcode' ); 
 add_filter('getpp_filter_args',			'getpp_filter_args_default',10); 
-add_filter('getpp_filtertemplate',		'getpp_filtertemplate_default',10);
+add_filter('getpp_filter_template',		'getpp_filter_template_default',10);
 add_filter('getpp_getposts',			'getpp_getposts_default',10);
 
 function getpp_shortcode($args){
@@ -21,7 +21,7 @@ function getpp_shortcode($args){
 	$args = apply_filters('getpp_filter_args',$args); // convert variables  ex: this > 123.  apply_filters allows override
 	$posts = apply_filters('getpp_getposts',$args);
 	if (!$posts) return;
-	$template = 'getpp_template_' . apply_filters('getpp_filtertemplate', $template);
+	$template = 'getpp_template_' . apply_filters('getpp_filter_template', $template);
 	$output = apply_filters($template,$posts,$args);
 	return $output;
 }
@@ -106,10 +106,10 @@ function getpp_getposts_default($args){
 	}
 }
 
-function getpp_filtertemplate_default($args){
-	if (!empty($args[template])) {
-		if (has_filter('getpp_template_'.$args[template])) {
-			return $args[template];
+function getpp_filter_template_default($template){
+	if (!empty($template)) {
+		if (has_filter('getpp_template_'.$template)) {
+			return $template;
 		}
 	}
 	add_filter('getpp_template_default','getpp_template_default_default',10,2); 
