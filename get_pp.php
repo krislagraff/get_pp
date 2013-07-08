@@ -17,8 +17,8 @@ add_filter('getpp_filter_template',		'getpp_filter_template_default',10);
 add_filter('getpp_getposts',			'getpp_getposts_default',10);
 
 function getpp_shortcode($args){
-	$template = $args[template]; unset($args[template]);  //pull out template
-	$args = apply_filters('getpp_filter_args',$args); // convert variables  ex: this > 123.  apply_filters allows override
+	$template = $args[template]; unset($args[template]);
+	$args = apply_filters('getpp_filter_args',$args);
 	$posts = apply_filters('getpp_getposts',$args);
 	if (!$posts) return;
 	$template = 'getpp_template_' . apply_filters('getpp_filter_template', $template);
@@ -93,7 +93,8 @@ function getpp_argfilter_catrelation_default($value){
 	} 
 
 function getpp_getposts_default($args){
-	switch ($args[func]) {
+	$func = $args[func];
+	switch ($func) {
 		case 'get_posts':
 			return get_posts($args);
 			break;
@@ -129,14 +130,13 @@ function getpp_template_default_default($posts, $args){
 }
 	function getpp_template_default_default_items($posts, $sargs){
 		$format = '<li id="%1$s" class="%5$s"><a style="border: 1px solid #e5e5e5; margin: auto auto -1px;" href="%2$s"><i class="icon-chevron-right pull-right"></i>%4$s%3$s</a></li>';
-		foreach ($posts as $key => $value) {
-			$depth = getpp_depth($sargs[child_of],$value);
-			if((($sargs[depth] >= 0) && ($depth <= $sargs[depth])) || (!isset($sargs[depth]))){
-				$args[id] = 		'post-'. $value->ID;
-				$args[href] =		get_permalink($value->ID);
-				$args[title] = 		$value->post_title;
+		foreach ($posts as $key => $post) {
+			if(getpp_depth_permitted($sargs[depth],getpp_depth($sargs[child_of],$post))){
+				$args[id] = 		'post-'. $post->ID;
+				$args[href] =		get_permalink($post->ID);
+				$args[title] = 		$post->post_title;
 				$args[indent] = 	str_repeat('&raquo; ', $depth);
-				$args[css] = 		($value->ID == get_the_ID())? 'active' : '';
+				$args[css] = 		($post->ID == get_the_ID())? 'active' : '';
 				$output .= vsprintf($format, $args);
 			}
 		} 
@@ -171,8 +171,7 @@ function getpp_template_summary_default($posts, $sargs){
 	$format = '<div class="media">%1$s<div class="media-body"><a href="%2$s"><h4 class="media-heading">%3$s</h4></a>%4$s</div></div>';
 	global $post;
 	foreach( $posts as $post ) : setup_postdata($post); 
-		$depth = getpp_depth($sargs[child_of],$value);
-		if((($sargs[depth] >= 0) && ($depth <= $sargs[depth])) || (!isset($sargs[depth]))){
+		if(getpp_depth_permitted($sargs[depth],getpp_depth($sargs[child_of],$post))){
 			$args[img] = get_the_post_thumbnail($post->ID, 'thumbnail', array('class'=>'media-object pull-left'));
 			$args[href] = get_permalink($post->ID);
 			$args[title] = $post->post_title;
@@ -194,8 +193,7 @@ function getpp_template_thumbnails_default($posts, $sargs){
 	$format = '<li class="span3"><a class="thumbnail" href="%2$s">%3$s<div class="text-center">%1$s</div></a></li>';
 	global $post;
 	foreach( $posts as $post ) : setup_postdata($post); 
-		$depth = getpp_depth($sargs[child_of],$value);
-		if((($sargs[depth] >= 0) && ($depth <= $sargs[depth])) || (!isset($sargs[depth]))){
+		if(getpp_depth_permitted($sargs[depth],getpp_depth($sargs[child_of],$post))){
 			$excerpt = get_the_excerpt();
 			$args[title] = $post->post_title;
 			$args[href] = get_permalink($post->ID);
@@ -209,16 +207,28 @@ add_filter('getpp_template_thumbnails','getpp_template_thumbnails_default',10,2)
 
 /**
  * This function gets the depth of the post/page
- * @param  [type] $start The top level post.  End should be a decendant of $start
- * @param  [type] $end   The post we are determining the depth of.
- * @return [type]        Returns the integer depth of the post.  If no beginning is specified, it will be the depth from the root
+ * @param  [type] $elder The top level post.  $younger should be a decendant of $elder
+ * @param  [type] $younger   The post we are determining the depth of.
+ * @return [type] Returns the generational difference as an integer.  If no $elder is specified, it will be the depth from the root
  */
-function getpp_depth($start, $end){
-	$ancestors = $end->ancestors;
-	if(isset($ancestors))
-		$depth = array_search($start,$ancestors);
-	if (!isset($depth)) 
-		return count($ancestors);
-	else 
-		return $depth;
+function getpp_depth($elder, $younger){
+	$y = count($younger->ancestors);
+	$e = count($elder->ancestors);
+	if(!is_numeric($e))
+		$e = 0;
+	return $y - $e;
+}
+
+/**
+ * This function determines if the object should be shown
+ * @param  [type] $allowed_depth level of depth allowed by depth=
+ * @param  [type] $item_depth    the calculated depth of the current object
+ * @return [type]                boolean true if allowed.  otherwise false.
+ */
+function getpp_depth_permitted($allowed_depth, $item_depth){
+	if(!isset($allowed_depth))
+		return true;
+	if($item_depth <= $allowed_depth)
+		return true;
+	return false;
 }
