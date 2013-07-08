@@ -213,7 +213,7 @@ add_filter('getpp_template_thumbnails','getpp_template_thumbnails_default',10,2)
  */
 function getpp_depth($elder, $younger){
 	$y = count($younger->ancestors);
-	$e = count($elder->ancestors);
+	$e = count(get_ancestors( $elder, 'page' ));
 	if(!is_numeric($e))
 		$e = 0;
 	return $y - $e;
