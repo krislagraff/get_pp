@@ -17,8 +17,7 @@ add_filter('getpp_filtertemplate',		'getpp_filtertemplate_default',10);
 add_filter('getpp_getposts',			'getpp_getposts_default',10);
 
 function getpp_shortcode($args){
-	$args = array_merge(wp_parse_args($args[args]),$args);
-	$args = getpp_applyargfilters(apply_filters('getpp_filterargs',$filters),$args);
+	$args = getpp_applyargfilters(apply_filters('getpp_filterargs',$filters),$args); 
 	$posts = apply_filters('getpp_getposts',$args);
 	if (!$posts) return;
 	$template = 'getpp_template_' . apply_filters('getpp_filtertemplate', $args);

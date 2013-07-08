@@ -6,9 +6,7 @@ After installing, you would simply add something like this to your content:
 
 `[getpp child_of="top" func="get_pages"]` would list all pages in the tree
 
-`[getpp func="get_posts" category="parent" template="summary"]`  
-which could also be written as:  
-`[getpp args="func=get_posts&category=parent&template=summary"]`  
+`[getpp func="get_posts" category="parent" template="summary"]`   
 would list all posts in the same category using the summary template
 
 
