@@ -17,10 +17,11 @@ add_filter('getpp_filtertemplate',		'getpp_filtertemplate_default',10);
 add_filter('getpp_getposts',			'getpp_getposts_default',10);
 
 function getpp_shortcode($args){
-	$args = apply_filters('getpp_filter_args',$args); 
+	$template = $args[template]; unset($args[template]);  //pull out template
+	$args = apply_filters('getpp_filter_args',$args); // convert variables  ex: this > 123.  apply_filters allows override
 	$posts = apply_filters('getpp_getposts',$args);
 	if (!$posts) return;
-	$template = 'getpp_template_' . apply_filters('getpp_filtertemplate', $args);
+	$template = 'getpp_template_' . apply_filters('getpp_filtertemplate', $template);
 	$output = apply_filters($template,$posts,$args);
 	return $output;
 }
