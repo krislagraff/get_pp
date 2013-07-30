@@ -162,7 +162,7 @@ add_filter( 'plugin_row_meta', 'set_getpp_meta', 10, 2 );
 
 
 /**
- * Use this function as a sample of how to create your own templates
+ * This function shows summaries with a thumbnail per http://getbootstrap.com/components/#media
  * @param  [type] $posts the posts returned by WordPress
  * @param  [type] $sargs the original arguments specified in the shortcode
  * @return [type] returns the html output
@@ -184,7 +184,7 @@ function getpp_template_summary_default($posts, $sargs){
 add_filter('getpp_template_summary','getpp_template_summary_default',10,2); 
 
 /**
- * Use this function as a sample of how to create your own templates
+ * This template shows thumbnails with titles per http://getbootstrap.com/components/#thumbnails
  * @param  [type] $posts the posts returned by WordPress
  * @param  [type] $sargs the original arguments specified in the shortcode
  * @return [type] returns the html output
@@ -204,6 +204,28 @@ function getpp_template_thumbnails_default($posts, $sargs){
 	return '<div class="row-fluid"><ul class="thumbnails">' . $output . '</ul></div>';
 }
 add_filter('getpp_template_thumbnails','getpp_template_thumbnails_default',10,2); 
+
+
+/**
+ * This function shows thumbnails with title per http://getbootstrap.com/components/#media
+ * @param  [type] $posts the posts returned by WordPress
+ * @param  [type] $sargs the original arguments specified in the shortcode
+ * @return [type] returns the html output
+ */
+function getpp_template_highlights_default($posts, $sargs){
+	$format = '<div class="media">%1$s<div class="media-body"><a href="%2$s"><b class="media-heading">%3$s</b></a></div></div>';
+	global $post;
+	foreach( $posts as $post ) : setup_postdata($post); 
+		if(getpp_depth_permitted($sargs[depth],getpp_depth($sargs[child_of],$post))){
+			$args[img] = get_the_post_thumbnail($post->ID, 'thumbnail', array('class'=>'media-object pull-left span1'));
+			$args[href] = get_permalink($post->ID);
+			$args[title] = $post->post_title;
+			$output .= vsprintf($format,$args);
+		}
+	endforeach; wp_reset_postdata();
+	return $output;
+}
+add_filter('getpp_template_highlights','getpp_template_highlights_default',10,2); 
 
 /**
  * This function gets the depth of the post/page
