@@ -205,7 +205,6 @@ function getpp_template_thumbnails_default($posts, $sargs){
 }
 add_filter('getpp_template_thumbnails','getpp_template_thumbnails_default',10,2); 
 
-
 /**
  * This function shows thumbnails with title per http://getbootstrap.com/components/#media
  * @param  [type] $posts the posts returned by WordPress
@@ -226,6 +225,27 @@ function getpp_template_highlights_default($posts, $sargs){
 	return $output;
 }
 add_filter('getpp_template_highlights','getpp_template_highlights_default',10,2); 
+
+/**
+ * This function shows with description and no thumbnails
+ * @param  [type] $posts the posts returned by WordPress
+ * @param  [type] $sargs the original arguments specified in the shortcode
+ * @return [type] returns the html output
+ */
+function getpp_template_text_default($posts, $sargs){
+	$format = '<p><a href="%1$s"><h4 class="media-heading">%2$s</h4></a>%3$s</p>';
+	global $post;
+	foreach( $posts as $post ) : setup_postdata($post); 
+		if(getpp_depth_permitted($sargs[depth],getpp_depth($sargs[child_of],$post))){
+			$args[href] = get_permalink($post->ID);
+			$args[title] = $post->post_title;
+			$args[excerpt] = get_the_excerpt();
+			$output .= vsprintf($format,$args);
+		}
+	endforeach; wp_reset_postdata();
+	return $output;
+}
+add_filter('getpp_template_text','getpp_template_text_default',10,2); 
 
 /**
  * This function gets the depth of the post/page
