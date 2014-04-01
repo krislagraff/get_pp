@@ -16,6 +16,18 @@ add_filter('getpp_filter_args',			'getpp_filter_args_default',10);
 add_filter('getpp_filter_template',		'getpp_filter_template_default',10);
 add_filter('getpp_getposts',			'getpp_getposts_default',10);
 
+function set_getpp_meta($links, $file) {
+    $plugin = plugin_basename(__FILE__);
+    if ($file == $plugin) {
+        return array_merge(
+            $links,
+            array( sprintf( '<a target="_blank" href="https://github.com/bristweb/get_pp">%s</a>',  __('Documentation') ) )
+        );
+    }
+    return $links;
+}
+add_filter( 'plugin_row_meta', 'set_getpp_meta', 10, 2 );
+
 function getpp_shortcode($args){
 	$template = $args[template]; unset($args[template]);
 	$args = apply_filters('getpp_filter_args',$args);
@@ -118,6 +130,34 @@ function getpp_filter_template_default($template){
 }
 
 /**
+ * This function gets the depth of the post/page
+ * @param  [type] $elder The top level post.  $younger should be a decendant of $elder
+ * @param  [type] $younger   The post we are determining the depth of.
+ * @return [type] Returns the generational difference as an integer.  If no $elder is specified, it will be the depth from the root
+ */
+function getpp_depth($elder, $younger){
+	$y = count($younger->ancestors);
+	$e = count(get_ancestors( $elder, 'page' ));
+	if(!is_numeric($e))
+		$e = 0;
+	return $y - $e;
+}
+
+/**
+ * This function determines if the object should be shown
+ * @param  [type] $allowed_depth level of depth allowed by depth=
+ * @param  [type] $item_depth    the calculated depth of the current object
+ * @return [type]                boolean true if allowed.  otherwise false.
+ */
+function getpp_depth_permitted($allowed_depth, $item_depth){
+	if(!isset($allowed_depth))
+		return true;
+	if($item_depth <= $allowed_depth)
+		return true;
+	return false;
+}
+
+/**
  * This function renders a simple list of posts in a Bootstrap styled format.  You can override this with your own filter.  See remove_filter and add_filter in the codex.
  * @param  [type] $posts the posts returned by WordPress
  * @param  [type] $args  the original arguments specified in the shortcode
@@ -142,24 +182,6 @@ function getpp_template_default_default($posts, $args){
 		} 
 		return $output;
 	}
-
-
-function set_getpp_meta($links, $file) {
-    $plugin = plugin_basename(__FILE__);
-    if ($file == $plugin) {
-        return array_merge(
-            $links,
-            array( sprintf( '<a target="_blank" href="https://github.com/bristweb/get_pp">%s</a>',  __('Documentation') ) )
-        );
-    }
-    return $links;
-}
- 
-add_filter( 'plugin_row_meta', 'set_getpp_meta', 10, 2 );
-
-
-
-
 
 /**
  * This function shows summaries with a thumbnail per http://getbootstrap.com/components/#media
@@ -246,31 +268,3 @@ function getpp_template_text_default($posts, $sargs){
 	return $output;
 }
 add_filter('getpp_template_text','getpp_template_text_default',10,2); 
-
-/**
- * This function gets the depth of the post/page
- * @param  [type] $elder The top level post.  $younger should be a decendant of $elder
- * @param  [type] $younger   The post we are determining the depth of.
- * @return [type] Returns the generational difference as an integer.  If no $elder is specified, it will be the depth from the root
- */
-function getpp_depth($elder, $younger){
-	$y = count($younger->ancestors);
-	$e = count(get_ancestors( $elder, 'page' ));
-	if(!is_numeric($e))
-		$e = 0;
-	return $y - $e;
-}
-
-/**
- * This function determines if the object should be shown
- * @param  [type] $allowed_depth level of depth allowed by depth=
- * @param  [type] $item_depth    the calculated depth of the current object
- * @return [type]                boolean true if allowed.  otherwise false.
- */
-function getpp_depth_permitted($allowed_depth, $item_depth){
-	if(!isset($allowed_depth))
-		return true;
-	if($item_depth <= $allowed_depth)
-		return true;
-	return false;
-}
