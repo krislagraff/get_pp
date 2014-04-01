@@ -206,6 +206,29 @@ function getpp_template_summary_default($posts, $sargs){
 add_filter('getpp_template_summary','getpp_template_summary_default',10,2); 
 
 /**
+ * This function shows dated summaries with a thumbnail per http://getbootstrap.com/components/#media
+ * @param  [type] $posts the posts returned by WordPress
+ * @param  [type] $sargs the original arguments specified in the shortcode
+ * @return [type] returns the html output
+ */
+function getpp_template_summary_dated_default($posts, $sargs){
+	$format = '<div class="media">%1$s<div class="media-body"><a href="%2$s"><h4 class="media-heading">%3$s</h4></a><small class="muted">%5$s<br></small>%4$s</div></div>';
+	global $post;
+	foreach( $posts as $post ) : setup_postdata($post); 
+		if(getpp_depth_permitted($sargs[depth],getpp_depth($sargs[child_of],$post))){
+			$args[img] = get_the_post_thumbnail($post->ID, 'thumbnail', array('class'=>'media-object pull-left'));
+			$args[href] = get_permalink($post->ID);
+			$args[title] = $post->post_title;
+			$args[excerpt] = get_the_excerpt();
+			$args[date] = get_the_date();
+			$output .= vsprintf($format,$args);
+		}
+	endforeach; wp_reset_postdata();
+	return $output;
+}
+add_filter('getpp_template_summary_dated','getpp_template_summary_dated_default',10,2); 
+
+/**
  * This template shows thumbnails with titles per http://getbootstrap.com/components/#thumbnails
  * @param  [type] $posts the posts returned by WordPress
  * @param  [type] $sargs the original arguments specified in the shortcode
@@ -249,7 +272,7 @@ function getpp_template_highlights_default($posts, $sargs){
 add_filter('getpp_template_highlights','getpp_template_highlights_default',10,2); 
 
 /**
- * This function shows with description and no thumbnails
+ * This function shows the headline and description without thumbnails
  * @param  [type] $posts the posts returned by WordPress
  * @param  [type] $sargs the original arguments specified in the shortcode
  * @return [type] returns the html output
@@ -268,3 +291,25 @@ function getpp_template_text_default($posts, $sargs){
 	return $output;
 }
 add_filter('getpp_template_text','getpp_template_text_default',10,2); 
+
+/**
+ * This function shows the headline, date and description without thumbnails
+ * @param  [type] $posts the posts returned by WordPress
+ * @param  [type] $sargs the original arguments specified in the shortcode
+ * @return [type] returns the html output
+ */
+function getpp_template_text_dated_default($posts, $sargs){
+	$format = '<p><a href="%1$s"><h4 class="media-heading">%2$s</h4></a><small class="muted">%4$s<br></small>%3$s</p>';
+	global $post;
+	foreach( $posts as $post ) : setup_postdata($post); 
+		if(getpp_depth_permitted($sargs[depth],getpp_depth($sargs[child_of],$post))){
+			$args[href] = get_permalink($post->ID);
+			$args[title] = $post->post_title;
+			$args[excerpt] = get_the_excerpt();
+			$args[date] = get_the_date();
+			$output .= vsprintf($format,$args);
+		}
+	endforeach; wp_reset_postdata();
+	return $output;
+}
+add_filter('getpp_template_text_dated','getpp_template_text_dated_default',10,2); 
