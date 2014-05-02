@@ -184,6 +184,29 @@ function getpp_template_default_default($posts, $args){
 	}
 
 /**
+ * This function shows dated full content with a thumbnail 
+ * @param  [type] $posts the posts returned by WordPress
+ * @param  [type] $sargs the original arguments specified in the shortcode
+ * @return [type] returns the html output
+ */
+function getpp_template_full_dated_default($posts, $sargs){
+	$format = '<div class="media">%1$s<div class="media-body"><a href="%2$s"><h4 class="media-heading">%3$s</h4></a><small class="muted">%5$s<br></small>%4$s</div></div>';
+	global $post;
+	foreach( $posts as $post ) : setup_postdata($post); 
+		if(getpp_depth_permitted($sargs[depth],getpp_depth($sargs[child_of],$post))){
+			$args[img] = get_the_post_thumbnail($post->ID, 'thumbnail', array('class'=>'media-object pull-left'));
+			$args[href] = get_permalink($post->ID);
+			$args[title] = $post->post_title;
+			$args[excerpt] = get_the_content();
+			$args[date] = get_the_date();
+			$output .= vsprintf($format,$args);
+		}
+	endforeach; wp_reset_postdata();
+	return $output;
+}
+add_filter('getpp_template_full_dated','getpp_template_full_dated_default',10,2); 
+
+/**
  * This function shows summaries with a thumbnail per http://getbootstrap.com/components/#media
  * @param  [type] $posts the posts returned by WordPress
  * @param  [type] $sargs the original arguments specified in the shortcode
